@@ -1,0 +1,59 @@
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<script>
+   $("form").submit(function(evt){
+      evt.preventDefault();
+      var formData = new FormData($(this)[0]);
+      console.log(formData);
+
+      $.ajax({
+          type: 'POST',
+          url: 'YourGetSignatureMethod', //return your signed url
+          data: {
+                fileName: yourFileName,
+                expiration: yourPolicyExpirationDate
+          },
+          success: function (signedUrl) {
+              //signedUrl= 'http://sampleId.cloudfront.net/video.mp4?Policy=examplePolicy&Signature=exampleSignature&Key-Pair-Id=exampleKey'
+              signedUrl= 'http://d1hwbwrtnf3c8c.cloudfront.net/as.png?Expires=1893456000&Signature=MZj8l4prxX9J6Mc1vAgR60IxjQyBs-UTp2BU73-Tr8ujK90E9dmvnUGEdoUuOBqlqX3ot6WkLP55p9EgiujRPA8sffOuKr8C2i6DfOFnYzf7UPiFmtXJfE7hRSWqpkzgxZ5PlGL2iDjoTjyvYVoN1fWmnSUziYZauxjixuuK~fN5yTkIa2LjL245QamSfa50zH0VJqaBr~w4mIR~ZthIEjsftiIlFdB13P6-stxZYYx~Nq5ZPCYmb~i2zlPaSwy6RHrKGRgjywGSI4wHTxFfn59-IKDzDJHF~BWSjBD3JtkUCsi0D9tuyGeS1xs1YdTcA5doPxDU6PtGGyzCdLfIWg__&Key-Pair-Id=KZN00IJAUP3SL'
+              let fileObject = yourGetFileFunction(); //returns File API
+              let reader = new FileReader(); //using the FileReader API to read files
+              reader.onload = function () {                                      
+            $.ajax({
+          url: signedUrl,
+          type: 'PUT',
+          contentType: fileObject.type,
+          data: reader.result,
+          processData: false,
+          crossDomain: true,
+                      success: function(){
+                      //upload success
+                      }
+            });
+              }  
+              reader.readAsArrayBuffer(fileObject);
+          }
+      });
+      return false;
+    });
+</script>
+
+
+<form>
+  <table>
+    <tr>
+      <td colspan="2">File Upload</td>
+    </tr>
+    <tr>
+      <th>Select File </th>
+      <td><input id="file" name="file" type="file" /></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type="submit" value="submit"/> 
+      </td>
+    </tr>
+  </table>
+</form>

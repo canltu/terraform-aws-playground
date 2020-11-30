@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Upload Form</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        function submitForm() {
+            console.log("submit event");
+            let fd = new FormData(document.getElementById("fileinfo"));
+            file = $('#file')[0].files[0];
+            $('#output').html('Uploading....');
+            $.ajax({
+              type: 'GET',
+              url: 'https://d1hwbwrtnf3c8c.cloudfront.net/sign/?url=https://d1hwbwrtnf3c8c.cloudfront.net/content/images/' + file.name,
+              crossDomain: true,
+              success: function (signedUrl) {
+                console.log(signedUrl)
+                $.ajax({
+                  url: signedUrl,
+                  type: 'PUT',
+                  data: file,
+                  crossDomain: true,
+                  processData: false,
+                  contentType: false,
+                  success: function ( output) {
+                    $('#output').html('Success: <a href="https://d1hwbwrtnf3c8c.cloudfront.net/images/' + file.name +'">https://d1hwbwrtnf3c8c.cloudfront.net/images/' + file.name + '</a>');
+                  }
+                }).done(function( data ) {
+                console.log("Output:");
+                console.log( data );
+                });
+              }
+            });
+            return false;
+        }
+    </script>
+</head>
+<body>
+    <form method="post" id="fileinfo" name="fileinfo" onsubmit="return submitForm();">
+        <label>Select a file:</label><br>
+        <input type="file" id="file" name="file" required />
+        <br><input type="submit" value="Upload" />
+    </form>
+    <div id="output"></div>
+</body>
+</html>
