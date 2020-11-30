@@ -160,6 +160,7 @@ resource "null_resource" "configure-cat-app" {
       "sudo chmod +x *.sh",
       "sudo chmod +x *.py",
       "sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080",
+      "echo ${SIGNING_KEY} > signing_private_key.pem",
       "nohup ./s.py&"
     ]
 
